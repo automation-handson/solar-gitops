@@ -1,0 +1,1 @@
+# This Directory Serves as the Infrastructure Behind the [solar-app](https://github.com/automation-handson/solar-app)
