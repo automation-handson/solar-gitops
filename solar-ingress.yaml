@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: solar-ingress
-  namespace: solar-app
+  name: dev-solar-ingress
+  namespace: dev-solar-app
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
@@ -17,16 +17,16 @@ spec:
   ingressClassName: alb
   tls:
   - hosts:
-      - solar-app.devvf.com
+      - dev-solar-app.devvf.com
   rules:
-  - host: solar-app.devvf.com
+  - host: dev-solar-app.devvf.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: solar-app-svc
+            name: dev-solar-app-svc
             port:
               number: 3000
 

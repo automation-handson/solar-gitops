@@ -1,21 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: solar-app
-  namespace: solar-app
+  name: dev-solar-app
+  namespace: dev-solar-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: solar-app
+      app: dev-solar-app
   template:
     metadata:
       labels:
-        app: solar-app
+        app: dev-solar-app
     spec:
       containers:
+<<<<<<< Updated upstream
       - name: solar-app
         image: anas1243/solar-app:dev-c927f17
+=======
+      - name: dev-solar-app
+        image: anas1243/solar-app:main-8f78bc0
+>>>>>>> Stashed changes
         resources:
           limits:
             memory: "1Gi"
