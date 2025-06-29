@@ -1,0 +1,15 @@
+#Since the ingress is only for exposing http and https application, we have to expose mongo through a loadbalancer service of type network
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-svc
+  namespace: mongodb
+spec:
+  type: LoadBalancer
+  loadBalancerClass: service.k8s.aws/nlb
+  selector:
+    app: mongodb
+  ports:
+  - port: 27017
+    targetPort: 27017

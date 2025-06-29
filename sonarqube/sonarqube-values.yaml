@@ -1,0 +1,35 @@
+# Disable the default PostgreSQL database configuration
+postgresql:
+  enabled: false
+
+jdbcOverwrite:
+  enabled: true
+  jdbcUrl: "jdbc:postgresql://postgres-postgresql.sonarqube.svc.cluster.local:5432/sonarqube" # Add sslmode if TLS is enabled on PostgreSQL
+  jdbcUsername: "sonarqube"
+  jdbcSecretName: "sonarqube-postgres" # Name of your Kubernetes secret
+  jdbcSecretPasswordKey: "sonarqube-password" # postgres user password key in the secret
+
+persistence:
+  enabled: true
+  storageClass: vault-ebs-sc
+
+ingress:
+  enabled: true
+  ingressClassName: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/backend-protocol: "HTTP"
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:221133053333:certificate/ad1e683b-9ce4-4313-8615-ecb1de2e6d2c
+    alb.ingress.kubernetes.io/tags: "Environment=sandbox , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=o-380-dl-vci-secretsmanagement@vodafone.onmicrosoft.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
+    alb.ingress.kubernetes.io/group.name: test-apps-alb
+  hosts: 
+    - name: sonarqube.devvf.com
+      path: /
+      pathType: Prefix
+community:
+  enabled: true
+
+monitoringPasscodeSecretName: "sonarqube-postgres"
+monitoringPasscodeSecretKey: "sonarqube-password"
