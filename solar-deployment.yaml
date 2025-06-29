@@ -14,13 +14,8 @@ spec:
         app: dev-solar-app
     spec:
       containers:
-<<<<<<< Updated upstream
       - name: solar-app
         image: anas1243/solar-app:dev-c927f17
-=======
-      - name: dev-solar-app
-        image: anas1243/solar-app:main-8f78bc0
->>>>>>> Stashed changes
         resources:
           limits:
             memory: "1Gi"
