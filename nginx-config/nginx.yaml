@@ -1,65 +1,42 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name:  nginx
-  namespace: nginx
----  
-apiVersion: v1
-kind: Secret
-metadata:
-  name: nginx-k8s-auth-secret
-  namespace: nginx
-  annotations:
-    kubernetes.io/service-account.name: nginx
-type: kubernetes.io/service-account-token
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: nginx-token-review-binding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: system:auth-delegator
-subjects:
-  - kind: ServiceAccount
-    name: nginx
-    namespace: nginx
----
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: nginx
   namespace: nginx
   labels:
     name: nginx
-  annotations:
-    vault.hashicorp.com/agent-inject: "true"
-    vault.hashicorp.com/role: 'nginx-role'
-    # vault.hashicorp.com/agent-inject-secret-credentials.txt: 'secrets/data/nginx-app'
-    vault.hashicorp.com/agent-inject-secret-database-config.txt: 'mongodb/creds/mongo'
-    vault.hashicorp.com/agent-inject-template-database-config.txt: |
-          {{- with secret "mongodb/creds/mongo" -}}
-          mongodb://{{ .Data.username }}:{{ .Data.password }}@mongodb.mongodb.svc.cluster.local:27017
-          {{- end -}}
-    vault.hashicorp.com/namespace: 'sms'
-    vault.hashicorp.com/tls-secret: 'vault-tls'
-    vault.hashicorp.com/ca-cert: "/vault/tls/ca.crt"
-    vault.hashicorp.com/client-cert: "/vault/tls/tls.crt"
-    vault.hashicorp.com/client-key: "/vault/tls/tls.key"
-    vault.hashicorp.com/tls-server-name: 'secrets.devvf.com'
-    # vault.hashicorp.com/tls-skip-verify: 'true'
 spec:
-  serviceAccountName: nginx
-  containers:
-  - name: nginx
-    image: nginx
-    resources:
-      limits:
-        memory: "128Mi"
-        cpu: "500m"
-    ports:
-      - containerPort: 80
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nginx
+  template:
+    metadata:
+      labels:
+        name: nginx
+    spec:
+      serviceAccountName: nginx
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+          - containerPort: 80
+        volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx/conf.d
+          - name: mongo-secret
+            mountPath: /vault/secrets  
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+        - name: mongo-secret
+          secret:
+            secretName: mongo-secret       
 ---
 apiVersion: v1
 kind: Service
@@ -67,8 +44,37 @@ metadata:
   namespace: nginx
   name: nginx-svc
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     name: nginx
   ports:
   - port: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: nginx
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:221133053333:certificate/ad1e683b-9ce4-4313-8615-ecb1de2e6d2c
+    alb.ingress.kubernetes.io/tags: "Environment=sandbox , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=o-380-dl-vci-secretsmanagement@vodafone.onmicrosoft.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
+    alb.ingress.kubernetes.io/group.name: test-apps-alb
+spec:
+  tls:
+  - hosts:
+    - bitnami-nginx.devvf.com    
+  ingressClassName: alb
+  rules:
+  - host: bitnami-nginx.devvf.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: nginx-svc
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
