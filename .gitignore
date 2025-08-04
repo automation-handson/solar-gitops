@@ -41,7 +41,7 @@ terraform.rc
 
 # ignore all local cred files
 *.txt
-
+*plain-secret.yaml
 # ignore vscode file
 **/.vscode/
 **/.DS_Store
