@@ -2,7 +2,6 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: test-avp-plugin
-  namespace: argocd
   annotations:
     avp.kubernetes.io/path: "secrets/data/apps/app1"
 type: Opaque
