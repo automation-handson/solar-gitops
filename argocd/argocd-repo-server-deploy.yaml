@@ -51,12 +51,45 @@ spec:
             weight: 5
       automountServiceAccountToken: false
       containers:
+      - name: avp
+        envFrom:
+          - secretRef:
+              name: avp-creds
+        env:
+        - name: VAULT_CACERT
+          value: /vault/vault-ca.crt
+        command: [/var/run/argocd/argocd-cmp-server]
+        image: registry.access.redhat.com/ubi8
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+          - mountPath: /vault
+            name: vault-ca
+          - mountPath: /var/run/argocd
+            name: var-files
+          - mountPath: /home/argocd/cmp-server/plugins
+            name: plugins
+          - mountPath: /tmp
+            name: tmp
+
+          # Register plugins into sidecar
+          - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+            subPath: avp.yaml
+            name: cmp-plugin
+
+          # Important: Mount tools into $PATH
+          - name: custom-tools
+            subPath: argocd-vault-plugin
+            mountPath: /usr/local/bin/argocd-vault-plugin      
       - args:
         - /usr/local/bin/argocd-repo-server
         envFrom:
           - secretRef:
               name: avp-creds
         env:
+        - name: VAULT_CACERT
+          value: /vault/vault-ca.crt
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -301,6 +334,8 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
+        - mountPath: /vault
+          name: vault-ca
         - mountPath: /usr/local/bin/argocd-vault-plugin
           name: custom-tools
           subPath: argocd-vault-plugin
@@ -323,23 +358,19 @@ spec:
       dnsPolicy: ClusterFirst
       initContainers:
       - name: download-tools
-        image: alpine:3.8
-        command: [sh, -c]
-
-        # Don't forget to update this to whatever the stable release version is
-        # Note the lack of the `v` prefix unlike the git tag
+        image: registry.access.redhat.com/ubi8
         env:
           - name: AVP_VERSION
-            value: "1.16.1"
+            value: 1.18.0
+        command: [sh, -c]
         args:
           - >-
-            wget -O argocd-vault-plugin
-            https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v${AVP_VERSION}/argocd-vault-plugin_${AVP_VERSION}_linux_amd64 &&
+            curl -L https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v$(AVP_VERSION)/argocd-vault-plugin_$(AVP_VERSION)_linux_amd64 -o argocd-vault-plugin &&
             chmod +x argocd-vault-plugin &&
             mv argocd-vault-plugin /custom-tools/
         volumeMounts:
           - mountPath: /custom-tools
-            name: custom-tools
+            name: custom-tools      
       - command:
         - /bin/cp
         - -n
@@ -372,6 +403,10 @@ spec:
       serviceAccountName: argocd-repo-server
       terminationGracePeriodSeconds: 30
       volumes:
+      - name: vault-ca
+        secret:
+          defaultMode: 420
+          secretName: vault-ca      
       - configMap:
           defaultMode: 420
           name: argocd-ssh-known-hosts-cm
@@ -407,7 +442,10 @@ spec:
       - emptyDir: {}
         name: plugins
       - emptyDir: {}
-        name: custom-tools  
+        name: custom-tools
+      - configMap:
+          name: cmp-plugin
+        name: cmp-plugin        
 status:
   availableReplicas: 1
   conditions:
