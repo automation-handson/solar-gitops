@@ -81,9 +81,9 @@ server:
     KMIP_DUMP_BYTE_VALUES: true
 
   extraSecretEnvironmentVars:
-    - envName: KMS_KEY_ARN
+    - envName: KMS_KEY_ID
       secretName: vault-infra-metadata
-      secretKey: KMS_KEY_ARN
+      secretKey: KMS_KEY_ID
 
   # extraVolumes is a list of extra volumes to mount. These will be exposed
   # to Vault in the path `/vault/userconfig/<name>/`.
