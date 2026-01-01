@@ -9,12 +9,12 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-name: "vault-nlb"
     service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"  # or "internal"
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"  # Directly target pods (recommended for EKS)
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "TCP"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "5696"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "10"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "5"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: "2"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "2"
+    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "TCP"
+    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "5696"
+    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "10"
+    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: "5"
+    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: "2"
+    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "2"
     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "Environment=sandbox,Project=vf-grp-ias-dev-ias-sanbox,ManagedBy=vcisecretmanagement@vodafone.com,SecurityZone=DEV,Confidentiality=C2,TaggingVersion=V2.4"
 
 spec:
