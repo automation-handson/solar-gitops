@@ -56,7 +56,7 @@ server:
 
 
   enterpriseLicense:
-    secretName: vault-license
+    secretName: vault-infra-metadata
     secretKey: vault.hclic
 
   serviceAccount:
@@ -71,7 +71,7 @@ server:
   # extraEnvironmentVars is a list of extra environment variables to set with the stateful set. These could be
   # used to include variables required for auto-unseal.
   extraEnvironmentVars:
-    VAULT_CACERT: /vault/userconfig/vault-tls-ca/ca.crt
+    VAULT_CACERT: /vault/userconfig/vault-infra-metadata/ca.crt
     VAULT_TLS_SERVER_NAME: vault-0.vault-internal
     KMIP_CONNECTION_DEBUGGING: true
     KMIP_REQUEST_DEBUGGING: true
@@ -80,15 +80,20 @@ server:
     KMIP_INDEX_DEBUGGING: true
     KMIP_DUMP_BYTE_VALUES: true
 
+  extraSecretEnvironmentVars:
+    - name: KMS_KEY_ARN
+      secretName: vault-infra-metadata
+      secretKey: KMS_KEY_ARN
+
   # extraVolumes is a list of extra volumes to mount. These will be exposed
   # to Vault in the path `/vault/userconfig/<name>/`.
   extraVolumes:
     # - type: secret
     #   name: vault-license
     - type: secret
-      name: primaries-tls
-    - type: secret
-      name: vault-tls-ca
+      name: vault-infra-metadata
+    # - type: secret
+    #   name: vault-tls-ca
 
 
   # This configures the Vault Statefulset to create a PVC for audit logs.
@@ -116,11 +121,11 @@ server:
         ui           = true
         log_level = "trace"
         cluster_name = "primary"
-        //license_path = "/vault/userconfig/vault-license/vault.hclic"
+        //license_path = "/vault/userconfig/vault-infra-metadata/vault.hclic"
         listener "tcp" {
           tls_disable   = false
-          tls_cert_file = "/vault/userconfig/primaries-tls/tls.crt"
-          tls_key_file  = "/vault/userconfig/primaries-tls/tls.key"
+          tls_cert_file = "/vault/userconfig/vault-infra-metadata/tls.crt"
+          tls_key_file  = "/vault/userconfig/vault-infra-metadata/tls.key"
           tls_require_and_verify_client_cert = false
           tls_disable_client_certs           = true
           address = "[::]:8200"
@@ -130,32 +135,32 @@ server:
         }
         seal "awskms" {
           region     = "eu-central-1"
-          kms_key_id = "3ffdb60d-3a00-4908-a747-ba64894e9747"
+          kms_key_id = "${KMS_KEY_ID}"
         }
         storage "raft" {
           path = "/vault/data"
           retry_join {
             //auto_join             = "provider=k8s namespace=vault label_selector=\"app.kubernetes.io/name = vault,component = vault-server\""
             //auto_join_scheme      = "https"
-            leader_ca_cert_file   = "/vault/userconfig/vault-tls-ca/ca.crt"
-            leader_client_cert_file = "/vault/userconfig/primaries-tls/tls.crt"
-            leader_client_key_file  = "/vault/userconfig/primaries-tls/tls.key"
+            leader_ca_cert_file   = "/vault/userconfig/vault-infra-metadata/ca.crt"
+            leader_client_cert_file = "/vault/userconfig/vault-infra-metadata/tls.crt"
+            leader_client_key_file  = "/vault/userconfig/vault-infra-metadata/tls.key"
             leader_api_addr       = "https://vault-0.vault-internal:8200"
           }
           retry_join {
               //auto_join             = "provider=k8s namespace=vault label_selector=\"app.kubernetes.io/name = vault,component = vault-server\""
               //auto_join_scheme      = "https"
-              leader_ca_cert_file   = "/vault/userconfig/vault-tls-ca/ca.crt"
-              leader_client_cert_file = "/vault/userconfig/primaries-tls/tls.crt"
-              leader_client_key_file  = "/vault/userconfig/primaries-tls/tls.key"
+              leader_ca_cert_file   = "/vault/userconfig/vault-infra-metadata/ca.crt"
+              leader_client_cert_file = "/vault/userconfig/vault-infra-metadata/tls.crt"
+              leader_client_key_file  = "/vault/userconfig/vault-infra-metadata/tls.key"
               leader_api_addr       = "https://vault-1.vault-internal:8200"
           }
           retry_join {
               //auto_join             = "provider=k8s namespace=vault label_selector=\"app.kubernetes.io/name = vault,component = vault-server\""
               //auto_join_scheme      = "https"
-              leader_ca_cert_file   = "/vault/userconfig/vault-tls-ca/ca.crt"
-              leader_client_cert_file = "/vault/userconfig/primaries-tls/tls.crt"
-              leader_client_key_file  = "/vault/userconfig/primaries-tls/tls.key"
+              leader_ca_cert_file   = "/vault/userconfig/vault-infra-metadata/ca.crt"
+              leader_client_cert_file = "/vault/userconfig/vault-infra-metadata/tls.crt"
+              leader_client_key_file  = "/vault/userconfig/vault-infra-metadata/tls.key"
               leader_api_addr       = "https://vault-2.vault-internal:8200"
           }
           autopilot {
