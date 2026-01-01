@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: solar-sc                     # Name of your storage class
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"  # Optional: set this as the default class
+provisioner: ebs.csi.aws.com        # Use AWS EBS CSI driver as the provisioner
+volumeBindingMode: WaitForFirstConsumer  # Ensures the volume is provisioned only after a pod is scheduled
+reclaimPolicy: Retain

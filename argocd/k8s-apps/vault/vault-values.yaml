@@ -1,0 +1,182 @@
+# Vault Helm Chart Value Overrides
+global:
+  enabled: true
+  tlsDisable: false
+
+injector:
+  enabled: true
+  # Use the Vault K8s Image https://github.com/hashicorp/vault-k8s/
+  image:
+    repository: "hashicorp/vault-k8s"
+    tag: "1.4.0"
+  logLevel: "debug"
+  webhook:
+    timeoutSeconds: 30
+
+server:
+  service:
+    enabled: true
+    type: ClusterIP
+    active:
+      enabled: true
+    standby:
+      enabled: true
+
+  readinessProbe:
+    enabled: true
+    path: "/v1/sys/health?perfstandbyok=true&standbyok=true&sealedcode=204&uninitcode=204&drsecondarycode=204"
+  livenessProbe:
+    enabled: true
+    path: "/v1/sys/health?perfstandbyok=true&standbyok=true&drsecondarycode=204"
+
+
+  # ingress:
+  #   annotations:
+  #     alb.ingress.kubernetes.io/tags: "Environment=sandbox , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=vcisecretmanagement@vodafone.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
+  #     kubernetes.io/ingress.class: alb
+  #     alb.ingress.kubernetes.io/target-type: ip
+  #     alb.ingress.kubernetes.io/group.name: vault
+  #     alb.ingress.kubernetes.io/healthcheck-path: "/v1/sys/health"
+  #     alb.ingress.kubernetes.io/healthcheck-protocol: "HTTPS"
+  #     alb.ingress.kubernetes.io/scheme: internet-facing
+  #     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+  #     # Global attribute, will be applied to all ingresses that have the same group
+  #     alb.ingress.kubernetes.io/ssl-redirect: "443"
+  #     alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
+  #     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:221133053333:certificate/d8ff8622-5fd0-4f9a-9d1c-c2fe2c07b11c
+
+  #   enabled: true
+  #   ingressClassName: alb
+  #   tls:
+  #     - secretName: primaries-tls
+  #       hosts:
+  #       - secrets.devvf.com
+  #   hosts:
+  #     - host: secrets.devvf.com
+
+
+  enterpriseLicense:
+    secretName: vault-license
+    secretKey: vault.hclic
+
+  serviceAccount:
+    create: true
+
+  enabled: true
+  # Use the Enterprise Image
+  image:
+    repository: "hashicorp/vault-enterprise"
+    tag: "1.19.4-ent"
+
+  # extraEnvironmentVars is a list of extra environment variables to set with the stateful set. These could be
+  # used to include variables required for auto-unseal.
+  extraEnvironmentVars:
+    VAULT_CACERT: /vault/userconfig/vault-tls-ca/ca.crt
+    VAULT_TLS_SERVER_NAME: vault-0.vault-internal
+    KMIP_CONNECTION_DEBUGGING: true
+    KMIP_REQUEST_DEBUGGING: true
+    KMIP_RESPONSE_DEBUGGING: true
+    KMIP_DECODING_DEBUGGING: true
+    KMIP_INDEX_DEBUGGING: true
+    KMIP_DUMP_BYTE_VALUES: true
+
+  # extraVolumes is a list of extra volumes to mount. These will be exposed
+  # to Vault in the path `/vault/userconfig/<name>/`.
+  extraVolumes:
+    # - type: secret
+    #   name: vault-license
+    - type: secret
+      name: primaries-tls
+    - type: secret
+      name: vault-tls-ca
+
+
+  # This configures the Vault Statefulset to create a PVC for audit logs.
+  # See https://www.vaultproject.io/docs/audit/index.html to know more
+  auditStorage:
+    enabled: true
+    storageClass: solar-sc
+
+  dataStorage:
+    enabled: true
+    storageClass: solar-sc  
+
+  standalone:
+    enabled: false
+
+  # Run Vault in "HA" mode.
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: true
+      setNodeId: true
+
+      config: |
+        ui           = true
+        log_level = "trace"
+        cluster_name = "primary"
+        //license_path = "/vault/userconfig/vault-license/vault.hclic"
+        listener "tcp" {
+          tls_disable   = false
+          tls_cert_file = "/vault/userconfig/primaries-tls/tls.crt"
+          tls_key_file  = "/vault/userconfig/primaries-tls/tls.key"
+          tls_require_and_verify_client_cert = false
+          tls_disable_client_certs           = true
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+          proxy_protocol_behavior = "use_always"
+          x_forwarded_for_authorized_addrs = "10.0.0.0/16"
+        }
+        seal "awskms" {
+          region     = "eu-central-1"
+          kms_key_id = "3ffdb60d-3a00-4908-a747-ba64894e9747"
+        }
+        storage "raft" {
+          path = "/vault/data"
+          retry_join {
+            //auto_join             = "provider=k8s namespace=vault label_selector=\"app.kubernetes.io/name = vault,component = vault-server\""
+            //auto_join_scheme      = "https"
+            leader_ca_cert_file   = "/vault/userconfig/vault-tls-ca/ca.crt"
+            leader_client_cert_file = "/vault/userconfig/primaries-tls/tls.crt"
+            leader_client_key_file  = "/vault/userconfig/primaries-tls/tls.key"
+            leader_api_addr       = "https://vault-0.vault-internal:8200"
+          }
+          retry_join {
+              //auto_join             = "provider=k8s namespace=vault label_selector=\"app.kubernetes.io/name = vault,component = vault-server\""
+              //auto_join_scheme      = "https"
+              leader_ca_cert_file   = "/vault/userconfig/vault-tls-ca/ca.crt"
+              leader_client_cert_file = "/vault/userconfig/primaries-tls/tls.crt"
+              leader_client_key_file  = "/vault/userconfig/primaries-tls/tls.key"
+              leader_api_addr       = "https://vault-1.vault-internal:8200"
+          }
+          retry_join {
+              //auto_join             = "provider=k8s namespace=vault label_selector=\"app.kubernetes.io/name = vault,component = vault-server\""
+              //auto_join_scheme      = "https"
+              leader_ca_cert_file   = "/vault/userconfig/vault-tls-ca/ca.crt"
+              leader_client_cert_file = "/vault/userconfig/primaries-tls/tls.crt"
+              leader_client_key_file  = "/vault/userconfig/primaries-tls/tls.key"
+              leader_api_addr       = "https://vault-2.vault-internal:8200"
+          }
+          autopilot {
+            cleanup_dead_servers = "true"
+            last_contact_threshold = "200ms"
+            last_contact_failure_threshold = "10m"
+            max_trailing_logs = 250000
+            min_quorum = 5
+            server_stabilization_time = "10s"
+          }
+        }
+        service_registration "kubernetes" {}
+# Vault UI
+ui:
+  enabled: true
+  serviceType: "LoadBalancer"
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: secrets.sandbox.devvf.com
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-name: "vault-nlb"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"  
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "Environment=sandbox,Project=vf-grp-ias-dev-ias-sanbox,ManagedBy=vcisecretmanagement@vodafone.com,SecurityZone=DEV,Confidentiality=C2,TaggingVersion=V2.4"
+  externalPort: 443
