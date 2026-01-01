@@ -73,6 +73,8 @@ server:
   extraEnvironmentVars:
     VAULT_CACERT: /vault/userconfig/vault-infra-metadata/ca.crt
     VAULT_TLS_SERVER_NAME: vault-0.vault-internal
+    VAULT_SEAL_TYPE: awskms
+    AWS_REGION: eu-central-1
     KMIP_CONNECTION_DEBUGGING: true
     KMIP_REQUEST_DEBUGGING: true
     KMIP_RESPONSE_DEBUGGING: true
@@ -132,10 +134,6 @@ server:
           cluster_address = "[::]:8201"
           proxy_protocol_behavior = "use_always"
           x_forwarded_for_authorized_addrs = "10.0.0.0/16"
-        }
-        seal "awskms" {
-          region     = "eu-central-1"
-          //kms_key_id = "{{ .Env.KMS_KEY_ID }}"
         }
         storage "raft" {
           path = "/vault/data"
