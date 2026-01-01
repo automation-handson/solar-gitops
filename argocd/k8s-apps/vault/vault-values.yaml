@@ -176,7 +176,7 @@ ui:
   enabled: true
   serviceType: "LoadBalancer"
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: secrets.sandbox.devvf.com
+    external-dns.alpha.kubernetes.io/hostname: secrets.sandbox.devvf.com,kmip.sandbox.devvf.com
     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
     service.beta.kubernetes.io/aws-load-balancer-name: "vault-nlb"
     service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"  
