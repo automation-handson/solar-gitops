@@ -135,7 +135,7 @@ server:
         }
         seal "awskms" {
           region     = "eu-central-1"
-          kms_key_id = "env://KMS_KEY_ID"
+          kms_key_id = "{{ .Env.AWS_KMS_KEY_ID }}"
         }
         storage "raft" {
           path = "/vault/data"
