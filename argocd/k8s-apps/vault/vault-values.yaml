@@ -81,7 +81,7 @@ server:
     KMIP_DUMP_BYTE_VALUES: true
 
   extraSecretEnvironmentVars:
-    - envName: KMS_KEY_ID
+    - envName: VAULT_AWSKMS_SEAL_KEY_ID
       secretName: vault-infra-metadata
       secretKey: KMS_KEY_ID
 
@@ -135,7 +135,7 @@ server:
         }
         seal "awskms" {
           region     = "eu-central-1"
-          kms_key_id = "{{ .Env.KMS_KEY_ID }}"
+          //kms_key_id = "{{ .Env.KMS_KEY_ID }}"
         }
         storage "raft" {
           path = "/vault/data"
