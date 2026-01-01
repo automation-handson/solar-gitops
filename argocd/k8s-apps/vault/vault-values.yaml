@@ -81,7 +81,7 @@ server:
     KMIP_DUMP_BYTE_VALUES: true
 
   extraSecretEnvironmentVars:
-    - name: KMS_KEY_ARN
+    - envName: KMS_KEY_ARN
       secretName: vault-infra-metadata
       secretKey: KMS_KEY_ARN
 
