@@ -30,29 +30,30 @@ server:
     path: "/v1/sys/health?perfstandbyok=true&standbyok=true&drsecondarycode=204"
 
 
-  # ingress:
-  #   annotations:
-  #     alb.ingress.kubernetes.io/tags: "Environment=sandbox , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=vcisecretmanagement@vodafone.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
-  #     kubernetes.io/ingress.class: alb
-  #     alb.ingress.kubernetes.io/target-type: ip
-  #     alb.ingress.kubernetes.io/group.name: vault
-  #     alb.ingress.kubernetes.io/healthcheck-path: "/v1/sys/health"
-  #     alb.ingress.kubernetes.io/healthcheck-protocol: "HTTPS"
-  #     alb.ingress.kubernetes.io/scheme: internet-facing
-  #     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
-  #     # Global attribute, will be applied to all ingresses that have the same group
-  #     alb.ingress.kubernetes.io/ssl-redirect: "443"
-  #     alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
-  #     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:221133053333:certificate/d8ff8622-5fd0-4f9a-9d1c-c2fe2c07b11c
+  ingress:
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: secrets.sandbox.devvf.com,kmip.sandbox.devvf.com
+      alb.ingress.kubernetes.io/tags: "Environment=sandbox , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=vcisecretmanagement@vodafone.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/group.name: solar-apps
+      alb.ingress.kubernetes.io/healthcheck-path: "/v1/sys/health"
+      alb.ingress.kubernetes.io/healthcheck-protocol: "HTTPS"
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+      # Global attribute, will be applied to all ingresses that have the same group
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:221133053333:certificate/d8ff8622-5fd0-4f9a-9d1c-c2fe2c07b11c
 
-  #   enabled: true
-  #   ingressClassName: alb
-  #   tls:
-  #     - secretName: primaries-tls
-  #       hosts:
-  #       - secrets.devvf.com
-  #   hosts:
-  #     - host: secrets.devvf.com
+    enabled: true
+    ingressClassName: alb
+    # tls:
+    #   - secretName: vault-infra-metadata
+    #     hosts:
+    #     - secrets.sandbox.devvf.com
+    hosts:
+      - host: secrets.sandbox.devvf.com
 
 
   enterpriseLicense:
@@ -171,14 +172,14 @@ server:
         }
         service_registration "kubernetes" {}
 # Vault UI
-ui:
-  enabled: true
-  serviceType: "LoadBalancer"
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: secrets.sandbox.devvf.com,kmip.sandbox.devvf.com
-    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-    service.beta.kubernetes.io/aws-load-balancer-name: "vault-nlb"
-    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"  
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "Environment=sandbox,Project=vf-grp-ias-dev-ias-sanbox,ManagedBy=vcisecretmanagement@vodafone.com,SecurityZone=DEV,Confidentiality=C2,TaggingVersion=V2.4"
-  externalPort: 443
+# ui:
+#   enabled: true
+#   serviceType: "LoadBalancer"
+#   annotations:
+#     external-dns.alpha.kubernetes.io/hostname: secrets.sandbox.devvf.com,kmip.sandbox.devvf.com
+#     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+#     service.beta.kubernetes.io/aws-load-balancer-name: "vault-nlb"
+#     service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"  
+#     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+#     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "Environment=sandbox,Project=vf-grp-ias-dev-ias-sanbox,ManagedBy=vcisecretmanagement@vodafone.com,SecurityZone=DEV,Confidentiality=C2,TaggingVersion=V2.4"
+#   externalPort: 443
