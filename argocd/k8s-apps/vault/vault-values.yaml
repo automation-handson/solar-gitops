@@ -4,7 +4,7 @@ global:
   tlsDisable: false
 
 injector:
-  enabled: true
+  enabled: false
   # Use the Vault K8s Image https://github.com/hashicorp/vault-k8s/
   image:
     repository: "hashicorp/vault-k8s"
