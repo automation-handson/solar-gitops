@@ -4,33 +4,43 @@ global:
   tlsDisable: false
 
 injector:
-  enabled: false
+  enabled: true
   # Use the Vault K8s Image https://github.com/hashicorp/vault-k8s/
+
   image:
     repository: "hashicorp/vault-k8s"
-    tag: "1.4.0"
+    tag: "1.7.0"
+  agentImage:
+    repository: "hashicorp/vault"
+    tag: "1.19.4-ent"
+
   logLevel: "debug"
   webhook:
     timeoutSeconds: 30
+  extraEnvironmentVars:
+    VAULT_CACERT: /vault/userconfig/vault-infra-metadata/ca.crt  
 
 server:
-  service:
-    enabled: true
-    type: ClusterIP
-    active:
-      enabled: true
-    standby:
-      enabled: true
+  enabled: true
+  enterpriseLicense:
+    secretName: vault-infra-metadata
+    secretKey: vault.hclic
 
-  readinessProbe:
-    enabled: true
-    path: "/v1/sys/health?perfstandbyok=true&standbyok=true&sealedcode=204&uninitcode=204&drsecondarycode=204"
-  livenessProbe:
-    enabled: true
-    path: "/v1/sys/health?perfstandbyok=true&standbyok=true&drsecondarycode=204"
+  # Use the Enterprise Image
+  image:
+    repository: "hashicorp/vault-enterprise"
+    tag: "1.19.4-ent"
 
+  updateStrategyType: RollingUpdate
+  logLevel: "trace"
+
+  extraPorts:
+    - name: kmip
+      containerPort: 5696
 
   ingress:
+    enabled: true
+    activeService: false
     annotations:
       # the AWS Load Balancer Controller will pick the tls certificate based on the hostname automatically
       # the external DNS annotation creates the required DNS records for the domain name to point to the ALB
@@ -47,24 +57,22 @@ server:
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
 
-    enabled: true
     ingressClassName: alb
     hosts:
       - host: secrets.sandbox.devvf.com
 
-
-  enterpriseLicense:
-    secretName: vault-infra-metadata
-    secretKey: vault.hclic
+  readinessProbe:
+    enabled: true
+    path: "/v1/sys/health?perfstandbyok=true&standbyok=true&sealedcode=204&uninitcode=204&drsecondarycode=204"
+  livenessProbe:
+    enabled: true
+    path: "/v1/sys/health?perfstandbyok=true&standbyok=true&drsecondarycode=204"
 
   serviceAccount:
     create: true
 
-  enabled: true
-  # Use the Enterprise Image
-  image:
-    repository: "hashicorp/vault-enterprise"
-    tag: "1.19.4-ent"
+  # Can be used to initialize vault 
+  postStart: []
 
   # extraEnvironmentVars is a list of extra environment variables to set with the stateful set. These could be
   # used to include variables required for auto-unseal.
@@ -87,13 +95,16 @@ server:
   # extraVolumes is a list of extra volumes to mount. These will be exposed
   # to Vault in the path `/vault/userconfig/<name>/`.
   extraVolumes:
-    # - type: secret
-    #   name: vault-license
     - type: secret
       name: vault-infra-metadata
-    # - type: secret
-    #   name: vault-tls-ca
 
+  service:
+    enabled: true
+    type: ClusterIP
+    active:
+      enabled: true
+    standby:
+      enabled: true
 
   # This configures the Vault Statefulset to create a PVC for audit logs.
   # See https://www.vaultproject.io/docs/audit/index.html to know more
@@ -168,8 +179,16 @@ server:
           }
         }
         service_registration "kubernetes" {}
+
+
+
+
+
+
 # Vault UI
 ui:
   enabled: true
   serviceType: "NodePort"
-  
+serverTelemetry:
+  enabled: false
+
