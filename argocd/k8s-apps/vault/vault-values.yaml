@@ -32,11 +32,13 @@ server:
 
   ingress:
     annotations:
+      # the AWS Load Balancer Controller will pick the tls certificate based on the hostname automatically
+      # the external DNS annotation creates the required DNS records for the domain name to point to the ALB
       external-dns.alpha.kubernetes.io/hostname: secrets.sandbox.devvf.com,kmip.sandbox.devvf.com
       alb.ingress.kubernetes.io/tags: "Environment=sandbox , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=vcisecretmanagement@vodafone.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
       kubernetes.io/ingress.class: alb
       alb.ingress.kubernetes.io/target-type: ip
-      alb.ingress.kubernetes.io/group.name: solar-apps
+      alb.ingress.kubernetes.io/group.name: devops-tools
       alb.ingress.kubernetes.io/healthcheck-path: "/v1/sys/health"
       alb.ingress.kubernetes.io/healthcheck-protocol: "HTTPS"
       alb.ingress.kubernetes.io/scheme: internet-facing
@@ -44,14 +46,9 @@ server:
       # Global attribute, will be applied to all ingresses that have the same group
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:221133053333:certificate/d8ff8622-5fd0-4f9a-9d1c-c2fe2c07b11c
 
     enabled: true
     ingressClassName: alb
-    # tls:
-    #   - secretName: vault-infra-metadata
-    #     hosts:
-    #     - secrets.sandbox.devvf.com
     hosts:
       - host: secrets.sandbox.devvf.com
 
