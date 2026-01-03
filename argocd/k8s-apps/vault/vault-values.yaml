@@ -49,7 +49,7 @@ server:
       kubernetes.io/ingress.class: alb
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/group.name: devops-tools
-      alb.ingress.kubernetes.io/healthcheck-path: "/v1/sys/health"
+      alb.ingress.kubernetes.io/healthcheck-path: "/v1/sys/health?perfstandbyok=true&standbyok=true"
       alb.ingress.kubernetes.io/healthcheck-protocol: "HTTPS"
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
