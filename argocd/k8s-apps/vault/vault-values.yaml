@@ -35,7 +35,7 @@ server:
       # the AWS Load Balancer Controller will pick the tls certificate based on the hostname automatically
       # the external DNS annotation creates the required DNS records for the domain name to point to the ALB
       external-dns.alpha.kubernetes.io/hostname: secrets.sandbox.devvf.com,kmip.sandbox.devvf.com
-      alb.ingress.kubernetes.io/tags: "Environment=sandbox , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=vcisecretmanagement@vodafone.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
+      alb.ingress.kubernetes.io/tags: "Environment=SANDBOX , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=vcisecretmanagement@vodafone.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
       kubernetes.io/ingress.class: alb
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/group.name: devops-tools
