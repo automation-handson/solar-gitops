@@ -171,5 +171,5 @@ server:
 # Vault UI
 ui:
   enabled: true
-  serviceType: "ClusterIP"
+  serviceType: "NodePort"
   
