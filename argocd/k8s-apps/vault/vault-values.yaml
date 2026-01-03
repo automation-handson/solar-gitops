@@ -169,14 +169,7 @@ server:
         }
         service_registration "kubernetes" {}
 # Vault UI
-# ui:
-#   enabled: true
-#   serviceType: "LoadBalancer"
-#   annotations:
-#     external-dns.alpha.kubernetes.io/hostname: secrets.sandbox.devvf.com,kmip.sandbox.devvf.com
-#     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-#     service.beta.kubernetes.io/aws-load-balancer-name: "vault-nlb"
-#     service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"  
-#     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-#     service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "Environment=sandbox,Project=vf-grp-ias-dev-ias-sanbox,ManagedBy=vcisecretmanagement@vodafone.com,SecurityZone=DEV,Confidentiality=C2,TaggingVersion=V2.4"
-#   externalPort: 443
+ui:
+  enabled: true
+  serviceType: "ClusterIP"
+  
