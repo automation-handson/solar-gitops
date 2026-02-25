@@ -11,7 +11,6 @@ controller:
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
       alb.ingress.kubernetes.io/backend-protocol: "HTTP"
       alb.ingress.kubernetes.io/healthcheck-path: "/login"
-      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:221133053333:certificate/ad1e683b-9ce4-4313-8615-ecb1de2e6d2c
-      alb.ingress.kubernetes.io/tags: "Environment=sandbox , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=o-380-dl-vci-secretsmanagement@vodafone.onmicrosoft.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
+      alb.ingress.kubernetes.io/tags: "Environment=SANDBOX , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=vcisecretmanagement@vodafone.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
       alb.ingress.kubernetes.io/group.name: test-apps-alb
-    hostName: jenkins.devvf.com
+    hostName: jenkins.sandbox.devvf.com

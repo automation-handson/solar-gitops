@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-ingress
+  namespace: argocd
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:221133053333:certificate/ad1e683b-9ce4-4313-8615-ecb1de2e6d2c
+    alb.ingress.kubernetes.io/tags: "Environment=sandbox , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=o-380-dl-vci-secretsmanagement@vodafone.onmicrosoft.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
+    alb.ingress.kubernetes.io/group.name: test-apps-alb
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+
+spec:
+  ingressClassName: alb
+  tls:
+  - hosts:
+      - argocd.devvf.com
+    secretName: argocd-secret
+  rules:
+  - host: argocd.devvf.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 443
+
