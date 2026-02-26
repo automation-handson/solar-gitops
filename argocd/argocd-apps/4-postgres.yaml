@@ -1,32 +1,32 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: postgres-argocd-app
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-  annotations:
-    argocd.argoproj.io/sync-wave: "4"
-spec:
-  project: default
-  sources:
-    - repoURL: "registry-1.docker.io/bitnamicharts"
-      targetRevision: 18.5.1
-      chart: postgresql
-      helm:
-        releaseName: postgres
-        valueFiles:
-          - $postgres-values/argocd/k8s-apps/sonarqube/postgres-db/postgres-values.yaml
-    - repoURL: "https://github.com/automation-handson/solar-gitops.git"
-      targetRevision: main
-      path: argocd/k8s-apps/sonarqube/postgres-db
-      ref: postgres-values  
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: sonarqube
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: postgres-argocd-app
+#   namespace: argocd
+#   finalizers:
+#     - resources-finalizer.argocd.argoproj.io
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "4"
+# spec:
+#   project: default
+#   sources:
+#     - repoURL: "registry-1.docker.io/bitnamicharts"
+#       targetRevision: 18.5.1
+#       chart: postgresql
+#       helm:
+#         releaseName: postgres
+#         valueFiles:
+#           - $postgres-values/argocd/k8s-apps/sonarqube/postgres-db/postgres-values.yaml
+#     - repoURL: "https://github.com/automation-handson/solar-gitops.git"
+#       targetRevision: main
+#       path: argocd/k8s-apps/sonarqube/postgres-db
+#       ref: postgres-values  
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: sonarqube
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
