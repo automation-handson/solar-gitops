@@ -3,14 +3,28 @@
 image:
   registry: docker.io
   repository: bitnamilegacy/sonarqube
-  tag: 25.8.0-debian-12-r2
-
 plugins:
     image:
       registry: docker.io
       repository: bitnamilegacy/os-shell
-      tag: 12-debian-12-r51
-
+caCerts:
+  image:
+      registry: docker.io
+      repository: bitnamilegacy/os-shell
+volumePermissions:
+  image:
+      registry: docker.io
+      repository: bitnamilegacy/os-shell
+sysctl:
+  image:
+      registry: docker.io
+      repository: bitnamilegacy/os-shell
+metrics:
+  jmx:
+    image:
+      registry: docker.io
+      repository: bitnamilegacy/os-shell
+                        
 serviceAccount:
   create: false
 postgresql:
