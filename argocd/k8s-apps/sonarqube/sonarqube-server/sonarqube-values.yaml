@@ -1,4 +1,6 @@
 # Disable the default PostgreSQL database configuration
+serviceAccount:
+  create: false
 postgresql:
   enabled: false
 
