@@ -1,30 +1,5 @@
 # Disable the default PostgreSQL database configuration
 
-# image:
-#   registry: docker.io
-#   repository: bitnamilegacy/sonarqube
-# plugins:
-#     image:
-#       registry: docker.io
-#       repository: bitnamilegacy/os-shell
-# caCerts:
-#   image:
-#       registry: docker.io
-#       repository: bitnamilegacy/os-shell
-# volumePermissions:
-#   image:
-#       registry: docker.io
-#       repository: bitnamilegacy/os-shell
-# sysctl:
-#   image:
-#       registry: docker.io
-#       repository: bitnamilegacy/os-shell
-# metrics:
-#   jmx:
-#     image:
-#       registry: docker.io
-#       repository: bitnamilegacy/os-shell
-
 serviceAccount:
   create: false
 postgresql:
@@ -37,6 +12,13 @@ jdbcOverwrite:
   jdbcSecretName: "postgres-creds" # Name of your Kubernetes secret
   jdbcSecretPasswordKey: "sonarqube-password" # postgres user password key in the secret
 
+readinessProbe:
+  timeoutSeconds: 10
+livenessProbe:
+  timeoutSeconds: 10
+startupProbe:
+  timeoutSeconds: 10
+      
 persistence:
   enabled: true
   storageClass: solar-sc
