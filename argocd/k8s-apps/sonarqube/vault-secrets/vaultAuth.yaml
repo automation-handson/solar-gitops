@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: sonarqube
+  name: sonarqube
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: sonarqube-vso-auth
+  namespace: sonarqube
+spec:
+  method: kubernetes
+  mount: kubernetes
+  namespace: root
+  kubernetes:
+    role: sonarqube-role
+    serviceAccount: sonarqube
+    audiences:
+      - vault
