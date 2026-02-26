@@ -1,24 +1,24 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: sonarqube-vso-argocd-app
-#   namespace: argocd
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "3"
-# spec:
-#   project: default
-#   sources:
-#     - repoURL: "https://github.com/automation-handson/solar-gitops.git"
-#       targetRevision: main
-#       path: argocd/k8s-apps/sonarqube/vault-secrets
-#   destination:
-#     server: "https://kubernetes.default.svc"
-#     namespace: sonarqube
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sonarqube-vso-argocd-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: default
+  sources:
+    - repoURL: "https://github.com/automation-handson/solar-gitops.git"
+      targetRevision: main
+      path: argocd/k8s-apps/sonarqube/vault-secrets
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: sonarqube
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

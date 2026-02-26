@@ -1,10 +1,10 @@
 global:
-  storageClass: vault-ebs-sc
+  storageClass: solar-sc
   postgresql:
     auth:
-      existingSecret: sonarqube-postgres # Name of the secret you created
+      existingSecret: postgres-creds # Name of the secret you created
       secretKeys:
         userPasswordKey: sonarqube-password # Key for the sonarqube user password
-        adminPasswordKey: postgres-password # Key for the default 'postgres' user password
+        adminPasswordKey: admin-password # Key for the default 'postgres' user password
       username: sonarqube # The desired default username
       database: sonarqube # The desired default database name
