@@ -67,3 +67,5 @@ module "secrets_engine" {
   engine_namespace = concat(["root"], var.namespaces_list)
   depends_on = [ module.env_namespaces ]
 }
+
+## K8s Authentication method to be added for all namespaces
