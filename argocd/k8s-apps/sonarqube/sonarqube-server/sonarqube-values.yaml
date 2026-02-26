@@ -1,4 +1,9 @@
 # Disable the default PostgreSQL database configuration
+
+image:
+  registry: docker.io
+  repository: bitnamilegacy/sonarqube
+  tag: 25.8.0-debian-12-r2
 serviceAccount:
   create: false
 postgresql:
