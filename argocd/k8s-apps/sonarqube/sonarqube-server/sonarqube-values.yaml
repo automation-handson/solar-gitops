@@ -17,8 +17,8 @@ readinessProbe:
 livenessProbe:
   timeoutSeconds: 10
 startupProbe:
-  timeoutSeconds: 10
-      
+  timeoutSeconds: 180
+
 persistence:
   enabled: true
   storageClass: solar-sc
