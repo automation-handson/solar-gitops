@@ -1,32 +1,32 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: sonarqube-argocd-app
-#   namespace: argocd
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "5"
-# spec:
-#   project: default
-#   sources:
-#     - repoURL: "https://SonarSource.github.io/helm-chart-sonarqube"
-#       targetRevision: 2025.1.2
-#       chart: sonarqube
-#       helm:
-#         releaseName: sonarqube
-#         valueFiles:
-#           - $sonarqube-values/argocd/k8s-apps/sonarqube/sonarqube-server/sonarqube-values.yaml
-#     - repoURL: "https://github.com/automation-handson/solar-gitops.git"
-#       targetRevision: main
-#       path: argocd/k8s-apps/sonarqube/sonarqube-server
-#       ref: sonarqube-values  
-#   destination:
-#     server: "https://kubernetes.default.svc"
-#     namespace: sonarqube
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sonarqube-argocd-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  project: default
+  sources:
+    - repoURL: "https://SonarSource.github.io/helm-chart-sonarqube"
+      targetRevision: 2025.1.2
+      chart: sonarqube
+      helm:
+        releaseName: sonarqube
+        valueFiles:
+          - $sonarqube-values/argocd/k8s-apps/sonarqube/sonarqube-server/sonarqube-values.yaml
+    - repoURL: "https://github.com/automation-handson/solar-gitops.git"
+      targetRevision: main
+      path: argocd/k8s-apps/sonarqube/sonarqube-server
+      ref: sonarqube-values  
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: sonarqube
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
