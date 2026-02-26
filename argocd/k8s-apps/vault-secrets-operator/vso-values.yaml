@@ -2,5 +2,5 @@ defaultVaultConnection:
    enabled: true
    address: "https://vault.vault.svc.cluster.local:8200"
    skipTLSVerify: false
-   caCertSecret: vault-ca
-   tlsServerName: secrets.sandbox.devvf.com
+   caCertSecret: vault-ca # manual creation for now, to be automated in the future
+   tlsServerName: vault.vault
