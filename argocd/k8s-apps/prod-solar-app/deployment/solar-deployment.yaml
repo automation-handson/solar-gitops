@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: solar-app
-        image: anas1243/solar-app:main-76336e6
+        image: anas1243/solar-app:main-70173a6
         resources:
           limits:
             memory: "1Gi"
