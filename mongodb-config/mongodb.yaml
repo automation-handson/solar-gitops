@@ -1,9 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: mongodb
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mongodb-pvc
@@ -11,7 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: vault-ebs-sc
+  storageClassName: solar-sc
   resources:
     requests:
       storage: 10Gi
@@ -47,6 +42,7 @@ spec:
       labels:
         app: mongodb
     spec:
+      serviceAccountName: mongodb
       containers:
       - name: mongodb
         image: mongo:latest
@@ -58,7 +54,7 @@ spec:
         - containerPort: 27017
         envFrom:
         - secretRef:
-            name: mongo-secret
+            name: mongodb-creds
         volumeMounts:
         - name: mongodb-storage
           mountPath: /data/db

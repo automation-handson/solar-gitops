@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: mongodb
+  name: mongodb
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: mongodb-vso-auth
+  namespace: mongodb
+spec:
+  method: kubernetes
+  mount: kubernetes
+  namespace: root
+  kubernetes:
+    role: mongodb-role
+    serviceAccount: mongodb
+    audiences:
+      - vault
