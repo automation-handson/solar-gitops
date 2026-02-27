@@ -1,11 +1,3 @@
-image:
-  repository: "bitnamilegacy/postgresql"
-volumePermissions:
-  image:
-  repository: "bitnamilegacy/os-shell"
-metrics:
-  image:
-    repository : "bitnamilegacy/postgres-exporter"
 global:
   storageClass: solar-sc
   postgresql:
