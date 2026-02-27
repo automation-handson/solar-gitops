@@ -1,10 +1,14 @@
-global:
+persistence:
   storageClass: solar-sc
-  postgresql:
-    auth:
-      existingSecret: postgres-creds # Name of the secret you created
-      secretKeys:
-        userPasswordKey: sonarqube-password # Key for the sonarqube user password
-        adminPasswordKey: admin-password # Key for the default 'postgres' user password
-      username: sonarqube # The desired default username
-      database: sonarqube # The desired default database name
+
+auth:
+  existingSecret: postgres-creds # Name of the secret you created
+  secretKeys:
+    adminPasswordKey: admin-password # Key for the default 'postgres' user password
+
+customUser:
+  database: sonarqube
+  existingSecret: postgres-creds # Name of the secret you created
+  secretKeys:
+    name: sonarqube-username # Key for the custom database user
+    password: sonarqube-password # Key for the custom database user password
