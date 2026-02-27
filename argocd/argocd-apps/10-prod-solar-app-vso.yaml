@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-solar-app-vso
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+spec:
+  project: default
+  sources:
+    - repoURL: "https://github.com/automation-handson/solar-gitops.git"
+      targetRevision: main
+      path: argocd/k8s-apps/prod-solar-app/vault-secrets
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: prod-solar-app
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: prod-solar-app
+  name: prod-solar-app
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: prod-solar-app-vso-auth
+  namespace: prod-solar-app
+spec:
+  method: kubernetes
+  mount: kubernetes
+  namespace: root
+  kubernetes:
+    role: prod-solar-app
+    serviceAccount: prod-solar-app
+    audiences:
+      - vault

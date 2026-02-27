@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: solar-ingress
+  namespace: prod-solar-app
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: solar-app.sandbox.devvf.com
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/backend-protocol: "HTTP"
+    alb.ingress.kubernetes.io/tags: "Environment=SANDBOX , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=vcisecretmanagement@vodafone.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
+    alb.ingress.kubernetes.io/group.name: devops-tools
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+
+spec:
+  ingressClassName: alb
+  tls:
+  - hosts:
+      - solar-app.sandbox.devvf.com
+  rules:
+  - host: solar-app.sandbox.devvf.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: solar-app-svc
+            port:
+              number: 3000
+

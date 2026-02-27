@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: dev-solar-app
+  name: dev-solar-app
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: dev-solar-app-vso-auth
+  namespace: dev-solar-app
+spec:
+  method: kubernetes
+  mount: kubernetes
+  namespace: root
+  kubernetes:
+    role: dev-solar-app
+    serviceAccount: dev-solar-app
+    audiences:
+      - vault

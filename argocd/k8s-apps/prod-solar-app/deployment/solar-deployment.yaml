@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solar-app
+  namespace: prod-solar-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: solar-app
+  template:
+    metadata:
+      labels:
+        app: solar-app
+    spec:
+      containers:
+      - name: solar-app
+        image: anas1243/solar-app:main-c485ba7
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+          requests:
+            memory: "500Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MONGO_URI
+          valueFrom:
+            secretKeyRef:
+              name: mongo-uri
+              key: MONGO_URI
