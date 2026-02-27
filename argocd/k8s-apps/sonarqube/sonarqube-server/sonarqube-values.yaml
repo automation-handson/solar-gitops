@@ -41,5 +41,5 @@ ingress:
 community:
   enabled: true
 
-# monitoringPasscodeSecretName: "postgres-creds"
-# monitoringPasscodeSecretKey: "sonarqube-password"
+monitoringPasscodeSecretName: "postgres-creds"
+monitoringPasscodeSecretKey: "sonarqube-password"
