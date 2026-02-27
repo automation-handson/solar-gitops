@@ -1,0 +1,20 @@
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   namespace: jenkins
+#   name: jenkins
+# ---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: jenkins-vso-auth
+  namespace: jenkins
+spec:
+  method: kubernetes
+  mount: kubernetes
+  namespace: root
+  kubernetes:
+    role: jenkins-role
+    serviceAccount: jenkins
+    audiences:
+      - vault
