@@ -7,7 +7,7 @@ postgresql:
 
 jdbcOverwrite:
   enabled: true
-  jdbcUrl: "jdbc:postgresql://postgres-postgresql.sonarqube.svc.cluster.local:5432/sonarqube" # Add sslmode if TLS is enabled on PostgreSQL
+  jdbcUrl: "jdbc:postgresql://postgres.sonarqube.svc.cluster.local:5432/sonarqube" # Add sslmode if TLS is enabled on PostgreSQL
   jdbcUsername: "sonarqube"
   jdbcSecretName: "postgres-creds" # Name of your Kubernetes secret
   jdbcSecretPasswordKey: "sonarqube-password" # postgres user password key in the secret
