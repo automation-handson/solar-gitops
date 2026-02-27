@@ -1,0 +1,17 @@
+persistence:
+  storageClass: solar-sc
+controller:
+  ingress:
+    enabled: true
+    ingressClassName: alb
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: jenkins.sandbox.devvf.com
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/backend-protocol: "HTTP"
+      alb.ingress.kubernetes.io/healthcheck-path: "/login"
+      alb.ingress.kubernetes.io/tags: "Environment=SANDBOX , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=vcisecretmanagement@vodafone.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
+      alb.ingress.kubernetes.io/group.name: devops-tools
+    hostName: jenkins.sandbox.devvf.com
+  jenkinsUrl: "https://jenkins.sandbox.devvf.com"  

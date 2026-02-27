@@ -45,7 +45,7 @@ spec:
       serviceAccountName: mongodb
       containers:
       - name: mongodb
-        image: mongo:latest
+        image: mongo:latest #27/2/2026
         resources:
           limits:
             memory: "1Gi"
