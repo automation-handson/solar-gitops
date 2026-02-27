@@ -10,6 +10,6 @@ customUser:
   database: sonarqube
   existingSecret: postgres-creds # Name of the secret you created
   secretKeys:
-    database: sonarqube
+    database: sonarqube-username
     name: sonarqube-username # Key for the custom database user
     password: sonarqube-password # Key for the custom database user password
