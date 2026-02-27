@@ -4,7 +4,7 @@ metadata:
   name: solar-ingress
   namespace: dev-solar-app
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: solar-app.dev.sandbox.devvf.com
+    external-dns.alpha.kubernetes.io/hostname: dev-solar-app.sandbox.devvf.com
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
@@ -17,9 +17,9 @@ spec:
   ingressClassName: alb
   tls:
   - hosts:
-      - solar-app.dev.sandbox.devvf.com
+      - dev-solar-app.sandbox.devvf.com
   rules:
-  - host: solar-app.dev.sandbox.devvf.com
+  - host: dev-solar-app.sandbox.devvf.com
     http:
       paths:
       - path: /
