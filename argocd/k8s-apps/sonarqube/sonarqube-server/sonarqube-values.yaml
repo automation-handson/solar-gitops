@@ -2,22 +2,22 @@
 
 serviceAccount:
   create: false
-postgresql:
-  enabled: false
+# postgresql:
+#   enabled: false
 
 jdbcOverwrite:
-  enabled: true
-  jdbcUrl: "jdbc:postgresql://postgres.sonarqube.svc.cluster.local:5432/sonarqube" # Add sslmode if TLS is enabled on PostgreSQL
-  jdbcUsername: "sonarqube"
-  jdbcSecretName: "postgres-creds" # Name of your Kubernetes secret
-  jdbcSecretPasswordKey: "sonarqube-password" # postgres user password key in the secret
+  enabled: false
+  # jdbcUrl: "jdbc:postgresql://postgres.sonarqube.svc.cluster.local:5432/sonarqube" # Add sslmode if TLS is enabled on PostgreSQL
+  # jdbcUsername: "sonarqube"
+  # jdbcSecretName: "postgres-creds" # Name of your Kubernetes secret
+  # jdbcSecretPasswordKey: "sonarqube-password" # postgres user password key in the secret
 
-readinessProbe:
-  timeoutSeconds: 10
-livenessProbe:
-  timeoutSeconds: 10
-startupProbe:
-  timeoutSeconds: 180
+# readinessProbe:
+#   timeoutSeconds: 10
+# livenessProbe:
+#   timeoutSeconds: 10
+# startupProbe:
+#   timeoutSeconds: 180
 
 persistence:
   enabled: true
@@ -41,5 +41,5 @@ ingress:
 community:
   enabled: true
 
-monitoringPasscodeSecretName: "postgres-creds"
-monitoringPasscodeSecretKey: "sonarqube-password"
+# monitoringPasscodeSecretName: "postgres-creds"
+# monitoringPasscodeSecretKey: "sonarqube-password"
