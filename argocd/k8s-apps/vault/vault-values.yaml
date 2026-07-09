@@ -22,6 +22,12 @@ injector:
 
 server:
   enabled: true
+  statefulSet:
+    securityContext:
+      pod:
+        capabilities:
+          add:
+            - IPC_LOCK
   enterpriseLicense:
     secretName: vault-infra-metadata
     secretKey: vault.hclic
@@ -180,12 +186,6 @@ server:
         }
         service_registration "kubernetes" {}
 
-  statefulSet:
-    securityContext:
-      pod:
-        capabilities:
-          add:
-            - IPC_LOCK
 
 # Vault UI
 ui:
