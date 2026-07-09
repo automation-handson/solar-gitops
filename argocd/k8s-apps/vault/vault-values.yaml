@@ -180,10 +180,12 @@ server:
         }
         service_registration "kubernetes" {}
 
-
-
-
-
+  statefulSet:
+    securityContext:
+      pod:
+        capabilities:
+          add:
+            - IPC_LOCK
 
 # Vault UI
 ui:
