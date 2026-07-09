@@ -22,12 +22,17 @@ injector:
 
 server:
   enabled: true
-  statefulSet:
-    securityContext:
-      pod:
-        capabilities:
-          add:
-            - IPC_LOCK
+  securityContext:
+    pod:
+      runAsNonRoot: true
+      runAsUser: 100
+      runAsGroup: 1000
+      fsGroup: 1000
+    container:
+      allowPrivilegeEscalation: false
+      capabilities:
+        add:
+          - IPC_LOCK
   enterpriseLicense:
     secretName: vault-infra-metadata
     secretKey: vault.hclic
