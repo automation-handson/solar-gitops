@@ -14,4 +14,4 @@ controller:
       alb.ingress.kubernetes.io/tags: "Environment=SANDBOX , Project=vf-grp-ias-dev-ias-sanbox , ManagedBy=vcisecretmanagement@vodafone.com , SecurityZone=DEV , Confidentiality=C2 , TaggingVersion=V2.4"
       alb.ingress.kubernetes.io/group.name: devops-tools
     hostName: jenkins.sandbox.devvf.com
-  jenkinsUrl: "https://jenkins.sandbox.devvf.com"  
+  jenkinsUrl: "https://jenkins.sandbox.devvf.com"
